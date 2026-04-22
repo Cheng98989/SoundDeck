@@ -254,7 +254,7 @@ namespace SoundDeck
 
             ConfirmForm uc = new ConfirmForm(confirmationString);
             uc.ShowDialog();
-            if (uc.Result != true)
+            if (uc.DialogResult != DialogResult.OK)
                 return;
 
             playlistCount = 0;
@@ -295,6 +295,7 @@ namespace SoundDeck
 
             ModifyForm mf = new ModifyForm(playlist[selectedIndex]);
             mf.ShowDialog();
+            playlist[selectedIndex] = mf.audioTrack;
         }
     }
 }

@@ -17,7 +17,6 @@ namespace SoundDeck
     {
         //Get e set sono i metodi di accesso di una proprieta'
         //get mette in sola lettura la proprieta Result e private set la rende modificale solo dall'interno della classe.
-        public bool Result { get; private set; }
         public ConfirmForm(string ConfirmMessage)
         {
             InitializeComponent();
@@ -32,11 +31,10 @@ namespace SoundDeck
                     "Il testo non corrisponde",
                     "Conferma Fallita"
                 );
-                Result = false;
                 return;
             }
 
-            Result = true;
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
     }
