@@ -231,23 +231,6 @@ namespace SoundDeck
         }
 
         //ContextMenuStrip Tabella playlist
-        private void tspDeleteAudioSelected_Click(object sender, EventArgs e)
-        {
-            if(plvPlaylist.FocusedItem == null)
-            {
-                PoisonMessageBox.Show(this,"Nessun Audio Selezionato");
-                return;
-            }
-            int selectedIndex = plvPlaylist.FocusedItem.Index;
-
-            TrackMetaData.DeleteAudioTrackFromArray(selectedIndex, playlist, ref playlistCount, true);
-
-            UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
-
-            plbSelectedAudioTitle.Text = "Non disponibile";
-            plbSelectedAudioArtist.Text = "Non disponibile";
-            picSelectedAudioAlbumArt.Image = picSelectedAudioAlbumArt.InitialImage;
-        }
 
         private void tspDeleteAudioAll_Click(object sender, EventArgs e)
         {
@@ -263,7 +246,9 @@ namespace SoundDeck
             if (result != DialogResult.Yes)
                 return;
 
-            ConfirmForm uc = new ConfirmForm("CONFERMO");
+            string confirmationString = StringHelper.GenerateString(AppDefaults.ConfirmationStringLeght);
+
+            ConfirmForm uc = new ConfirmForm(confirmationString);
             uc.ShowDialog();
             if (uc.Result != true)
                 return;
@@ -275,6 +260,36 @@ namespace SoundDeck
             plbSelectedAudioTitle.Text = "Non disponibile";
             plbSelectedAudioArtist.Text = "Non disponibile";
             picSelectedAudioAlbumArt.Image = picSelectedAudioAlbumArt.InitialImage;
+        }
+
+        private void tspSelectedAudioDelete_Click(object sender, EventArgs e)
+        {
+            if (plvPlaylist.FocusedItem == null)
+            {
+                PoisonMessageBox.Show(this, "Nessun Audio Selezionato");
+                return;
+            }
+            int selectedIndex = plvPlaylist.FocusedItem.Index;
+
+            TrackMetaData.DeleteAudioTrackFromArray(selectedIndex, playlist, ref playlistCount, true);
+
+            UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
+
+            plbSelectedAudioTitle.Text = "Non disponibile";
+            plbSelectedAudioArtist.Text = "Non disponibile";
+            picSelectedAudioAlbumArt.Image = picSelectedAudioAlbumArt.InitialImage;
+        }
+
+        private void tspSelectedAudioModify_Click(object sender, EventArgs e)
+        {
+            if (plvPlaylist.FocusedItem == null)
+            {
+                PoisonMessageBox.Show(this, "Nessun Audio Selezionato");
+                return;
+            }
+            int selectedIndex = plvPlaylist.FocusedItem.Index;
+
+            ModifyForm mf = new ModifyForm();
         }
     }
 }

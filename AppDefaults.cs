@@ -12,5 +12,6 @@ namespace SoundDeck
         public const int MaxVolume = 1;
         public const float DefaultTrackVolume = 0.5f;
         public const int MaxLoadedTracks = 500;
+        public const int ConfirmationStringLeght = 5;
     }
 }

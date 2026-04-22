@@ -15,7 +15,7 @@ namespace SoundDeck
 {
     public partial class ConfirmForm : PoisonForm
     {
-        public bool? Result;
+        public bool Result;
         public ConfirmForm(string ConfirmMessage)
         {
             InitializeComponent();
