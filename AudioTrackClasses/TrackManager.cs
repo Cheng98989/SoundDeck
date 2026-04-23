@@ -10,20 +10,16 @@ namespace SoundDeck
 {
     public static class TrackManager
     {
-        public static void StartTrack(TrackMetaData.AudioTrack audio,ref AudioFileReader audioFileReader, ref WaveOutEvent waveOutEvent)
+        public static void StartTrack(TrackMetaData.AudioTrack audio,ref AudioFileReader audioFileReader, ref WaveOutEvent waveOutEvent, float volume)
         {
             //Sto togliendo lastvolume e derivati
             //float previusAudioVolume = AppDefaults.DefaultVolumeMultiplier;
             if (waveOutEvent != null && waveOutEvent.PlaybackState == PlaybackState.Playing)
-            {
                 StopTrack(ref audioFileReader, ref waveOutEvent);
-            }
 
             if (waveOutEvent != null && waveOutEvent.PlaybackState == PlaybackState.Paused)
-            {
                 waveOutEvent.Play();
                 //return -1;
-            
 
             try
             {
@@ -31,6 +27,7 @@ namespace SoundDeck
                 waveOutEvent = new WaveOutEvent();
                 //Rimosso perche si ha cambiato da last volume a volume multiplier
                 //waveOutEvent.Volume = audio.VolumeMultiplier;
+                waveOutEvent.Volume = volume;
                 waveOutEvent.Init(audioFileReader);
                 waveOutEvent.Play();
             }
@@ -63,9 +60,7 @@ namespace SoundDeck
         public static void PauseTrack(WaveOutEvent waveOutEvent)
         {
             if (waveOutEvent != null && waveOutEvent.PlaybackState == PlaybackState.Playing)
-            {
                 waveOutEvent.Pause();
-            }
         }
     }
 }

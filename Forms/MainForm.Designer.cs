@@ -56,12 +56,12 @@ namespace SoundDeck
             this.colAudioDuration = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pcmDeleteAudio = new ReaLTaiizor.Controls.PoisonContextMenuStrip(this.components);
             this.tspDeleteAudioAll = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.pbtDeleteDeleteAllAudio = new ReaLTaiizor.Controls.PoisonButton();
-            this.pbtDeleteAudio = new ReaLTaiizor.Controls.PoisonButton();
             this.tspSelectedAudio = new System.Windows.Forms.ToolStripMenuItem();
             this.tspSelectedAudioDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.tspSelectedAudioModify = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.pbtDeleteDeleteAllAudio = new ReaLTaiizor.Controls.PoisonButton();
+            this.pbtDeleteAudio = new ReaLTaiizor.Controls.PoisonButton();
             this.poisonTabControl1.SuspendLayout();
             this.poisonTabPage1.SuspendLayout();
             this.poisonPanel1.SuspendLayout();
@@ -258,11 +258,11 @@ namespace SoundDeck
             // 
             // psbSelectedAudioVolume
             // 
-            this.psbSelectedAudioVolume.LargeChange = 10;
+            this.psbSelectedAudioVolume.LargeChange = 4;
             this.psbSelectedAudioVolume.Location = new System.Drawing.Point(350, 12);
             this.psbSelectedAudioVolume.Maximum = 100;
             this.psbSelectedAudioVolume.Minimum = 0;
-            this.psbSelectedAudioVolume.MouseWheelBarPartitions = 10;
+            this.psbSelectedAudioVolume.MouseWheelBarPartitions = 100;
             this.psbSelectedAudioVolume.Name = "psbSelectedAudioVolume";
             this.psbSelectedAudioVolume.Orientation = ReaLTaiizor.Enum.Poison.ScrollOrientationType.Vertical;
             this.psbSelectedAudioVolume.ScrollbarSize = 50;
@@ -385,14 +385,37 @@ namespace SoundDeck
             this.tspDeleteAudioAll,
             this.tspSelectedAudio});
             this.pcmDeleteAudio.Name = "pcmDeleteAudio";
-            this.pcmDeleteAudio.Size = new System.Drawing.Size(181, 70);
+            this.pcmDeleteAudio.Size = new System.Drawing.Size(170, 48);
             // 
             // tspDeleteAudioAll
             // 
             this.tspDeleteAudioAll.Name = "tspDeleteAudioAll";
-            this.tspDeleteAudioAll.Size = new System.Drawing.Size(180, 22);
+            this.tspDeleteAudioAll.Size = new System.Drawing.Size(169, 22);
             this.tspDeleteAudioAll.Text = "Svuota Playlist";
             this.tspDeleteAudioAll.Click += new System.EventHandler(this.tspDeleteAudioAll_Click);
+            // 
+            // tspSelectedAudio
+            // 
+            this.tspSelectedAudio.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tspSelectedAudioDelete,
+            this.tspSelectedAudioModify});
+            this.tspSelectedAudio.Name = "tspSelectedAudio";
+            this.tspSelectedAudio.Size = new System.Drawing.Size(169, 22);
+            this.tspSelectedAudio.Text = "Audio Selezionato";
+            // 
+            // tspSelectedAudioDelete
+            // 
+            this.tspSelectedAudioDelete.Name = "tspSelectedAudioDelete";
+            this.tspSelectedAudioDelete.Size = new System.Drawing.Size(121, 22);
+            this.tspSelectedAudioDelete.Text = "Elimina";
+            this.tspSelectedAudioDelete.Click += new System.EventHandler(this.tspSelectedAudioDelete_Click);
+            // 
+            // tspSelectedAudioModify
+            // 
+            this.tspSelectedAudioModify.Name = "tspSelectedAudioModify";
+            this.tspSelectedAudioModify.Size = new System.Drawing.Size(121, 22);
+            this.tspSelectedAudioModify.Text = "Modifica";
+            this.tspSelectedAudioModify.Click += new System.EventHandler(this.tspSelectedAudioModify_Click);
             // 
             // menuStrip1
             // 
@@ -423,29 +446,6 @@ namespace SoundDeck
             this.pbtDeleteAudio.UseCustomBackColor = true;
             this.pbtDeleteAudio.UseSelectable = true;
             this.pbtDeleteAudio.UseStyleColors = true;
-            // 
-            // tspSelectedAudio
-            // 
-            this.tspSelectedAudio.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tspSelectedAudioDelete,
-            this.tspSelectedAudioModify});
-            this.tspSelectedAudio.Name = "tspSelectedAudio";
-            this.tspSelectedAudio.Size = new System.Drawing.Size(180, 22);
-            this.tspSelectedAudio.Text = "Audio Selezionato";
-            // 
-            // tspSelectedAudioDelete
-            // 
-            this.tspSelectedAudioDelete.Name = "tspSelectedAudioDelete";
-            this.tspSelectedAudioDelete.Size = new System.Drawing.Size(180, 22);
-            this.tspSelectedAudioDelete.Text = "Elimina";
-            this.tspSelectedAudioDelete.Click += new System.EventHandler(this.tspSelectedAudioDelete_Click);
-            // 
-            // tspSelectedAudioModify
-            // 
-            this.tspSelectedAudioModify.Name = "tspSelectedAudioModify";
-            this.tspSelectedAudioModify.Size = new System.Drawing.Size(180, 22);
-            this.tspSelectedAudioModify.Text = "Modifica";
-            this.tspSelectedAudioModify.Click += new System.EventHandler(this.tspSelectedAudioModify_Click);
             // 
             // MainForm
             // 

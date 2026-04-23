@@ -80,13 +80,6 @@ namespace SoundDeck
             base.OnFormClosed(e);
         }
 
-
-
-
-
-
-
-
         private void psbSelectedAudioVolume_Scroll(object sender, ScrollEventArgs e)
         {
             //Sottrago value a 100 perche' la scroll bar parte dall'alto
@@ -216,8 +209,8 @@ namespace SoundDeck
             //    playlist[currentPlayingAudio].VolumeMultiplier = TrackManager.StartTrack(playlist[audioIndex], ref audioFileReader, ref waveOutDevice);
 
             //psbSelectedAudioVolume.Value = UIHelper.waveOutEventVolumeTopsbValue(playlist[audioIndex].VolumeMultiplier);
-
-            TrackManager.StartTrack(playlist[audioIndex], ref audioFileReader, ref waveOutDevice);
+            float startVolume = UIHelper.psbValueTowaveOutEventVolume(psbSelectedAudioVolume.Value);
+            TrackManager.StartTrack(playlist[audioIndex], ref audioFileReader, ref waveOutDevice, startVolume);
 
             //currentPlayingAudio = audioIndex;
         }
