@@ -26,7 +26,13 @@ namespace Echo
             if(!File.Exists( audioTrack.FilePath))
             {
                 this.DialogResult = DialogResult.Cancel;
-                PoisonMessageBox.Show(this, "Percorso file della traccia non valido");
+                PoisonMessageBox.Show(
+                    this,
+                    "Il file della traccia selezionata non è valido o non è più disponibile.",
+                    "File non valido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                    );
                 this.Close();
             }
 
@@ -42,7 +48,13 @@ namespace Echo
             if (!File.Exists(audioTrack.FilePath))
             {
                 this.DialogResult = DialogResult.Cancel;
-                PoisonMessageBox.Show(this, "Percorso file della traccia originale non valido");
+                PoisonMessageBox.Show(
+                    this,
+                    "Il file originale della traccia non è valido o non è più disponibile.",
+                    "File non valido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                    );
                 this.Close();
             }
             TrackMetaData.AudioTrack a;
@@ -53,7 +65,13 @@ namespace Echo
                     CultureInfo.InvariantCulture,
                     out float parsedVolume))
             {
-                PoisonMessageBox.Show(this, "Volume Multiplier dev'essere un numero");
+                PoisonMessageBox.Show(
+                    this,
+                    "Il campo Volume Multiplier deve contenere un valore numerico valido.",
+                    "Valore non valido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                    );
                 return;
             }
 
@@ -112,7 +130,7 @@ namespace Echo
 
                 $"Durata: {TrackMetaData.FormatTrackTime((int)audioTrack.Duration.TotalSeconds)}\n" +
                 $"{"",-18}--> {TrackMetaData.FormatTrackTime((int)a.Duration.TotalSeconds)}",
-                "Modify Confirmation",
+                "Conferma modifiche",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning,
                 600
@@ -157,9 +175,9 @@ namespace Echo
         {
             DialogResult result = PoisonMessageBox.Show(
                 this,
-                $"Sei sicuro di voler resettare i tags relativi a questa Audio Track?"
+                "Sei sicuro di voler ripristinare i tag originali di questa traccia?"
                 ,
-                "Reset Confirmation",
+                "Conferma ripristino",
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Warning
                 );

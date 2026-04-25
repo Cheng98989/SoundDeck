@@ -109,7 +109,13 @@ namespace Echo
             //Overflow Prevention
             if (playlistCount >= AppDefaults.MaxLoadedTracks)
             {
-                MessageBox.Show("Limite massimo playlist raggiunto");
+                PoisonMessageBox.Show(
+                    this,
+                    "Hai raggiunto il numero massimo di brani caricabili nella playlist.",
+                    "Limite raggiunto",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                    );
                 return;
             }
 
@@ -117,7 +123,13 @@ namespace Echo
             string filePath = ptxAudioFilePath.Text;
             if (!System.IO.File.Exists(filePath))
             {
-                MessageBox.Show("File Inesistente");
+                PoisonMessageBox.Show(
+                    this,
+                    "Il file selezionato non esiste o non è più disponibile.",
+                    "File non trovato",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                    );
                 return;
             }
 
@@ -186,7 +198,13 @@ namespace Echo
             //Controllo
             if (playlistCount <= 0)
             {
-                MessageBox.Show("Playlist Vuota");
+                PoisonMessageBox.Show(
+                    this,
+                    "La playlist è vuota. Aggiungi almeno un brano prima di avviare la riproduzione.",
+                    "Playlist vuota",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                    );
                 return;
             }
 
@@ -200,7 +218,13 @@ namespace Echo
             //Fallback in caso di audio non trovato
             if (audioIndex == -1)
             {
-                MessageBox.Show("Audio non trovato");
+                PoisonMessageBox.Show(
+                    this,
+                    "Non è stato possibile trovare il brano selezionato nella playlist corrente.",
+                    "Brano non trovato",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                    );
                 return;
             }
             //Elimino la variabile int current playing audio perche' mi serviva per salvare la canzone che stava girando e salvare il suo last volume (che sto togliendo)
@@ -267,7 +291,13 @@ namespace Echo
         {
             if (plvPlaylist.FocusedItem == null)
             {
-                PoisonMessageBox.Show(this, "Nessun Audio Selezionato");
+                PoisonMessageBox.Show(
+                    this,
+                    "Seleziona un brano dalla playlist prima di procedere.",
+                    "Nessun brano selezionato",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                    );
                 return;
             }
             int selectedIndex = plvPlaylist.FocusedItem.Index;
@@ -285,7 +315,13 @@ namespace Echo
         {
             if (plvPlaylist.FocusedItem == null)
             {
-                PoisonMessageBox.Show(this, "Nessun Audio Selezionato");
+                PoisonMessageBox.Show(
+                    this,
+                    "Seleziona un brano dalla playlist prima di modificarne i dati.",
+                    "Nessun brano selezionato",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                    );
                 return;
             }
             int selectedIndex = plvPlaylist.FocusedItem.Index;
@@ -300,69 +336,110 @@ namespace Echo
         //Salvataggio su file in cui le canzoni dal percorso file iniziale vengono copiate in una cartella e il percorso file viene anche modificato
         private void salvaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Controllo
+            //Controllo Vuoto
             if (playlistCount <= 0)
             {
-                MessageBox.Show("Playlist Vuota");
+                PoisonMessageBox.Show(
+                    this,
+                    "La playlist è vuota. Aggiungi almeno un brano prima di salvare.",
+                    "Playlist vuota",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                    );
                 return;
             }
+
+            //Controllo nome playlist
             string playlistName = ptxPlaylistName.Text.Trim();
             if (string.IsNullOrEmpty(playlistName))
             {
                 PoisonMessageBox.Show(
                     this,
-                    "Nome della playlist mancante"
+                    "Nome della playlist mancante",
+                    "Nome non valido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
                     );
                 return;
             }
 
-            //Richiesta conferma via poisonmessagebox
-
-            
             if (!StringHelper.CanBeADirectoryOrFileName(playlistName))
             {
                 PoisonMessageBox.Show(
                     this,
-                    $"Il titolo (max: 30 caratteri) non puo' contenere i seguenti caratteri \n" +
-                    $"{string.Join(", ", AppDefaults.NotAllowedCharsInDirectoryOrFileName)}"
+                    $"Il nome playlist (max: 30 caratteri) non può contenere i seguenti caratteri:\n" +
+                    $"{string.Join(", ", AppDefaults.NotAllowedCharsInDirectoryOrFileName)}",
+                    "Nome non valido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
                     );
                 return;
             }
 
-            playlistName = playlistName.Replace(' ', AppDefaults.SubstituteToSpaceInDirectoryOrFileName);
+            int result = TrackMetaData.SavePlaylistInEch(
+                AppDefaults.AudioTrackSavePath,
+                playlistName,
+                playlist,
+                playlistCount,
+                out int[] errors);
 
-            string playlistPath = Path.Combine(AppDefaults.AudioTrackSavePath, playlistName);
-
-            if (!Directory.Exists(playlistPath))
+            switch (result)
             {
-                Directory.CreateDirectory(playlistPath);
-            }
+                case 0:
+                    PoisonMessageBox.Show(
+                        this,
+                        "Playlist salvata correttamente.",
+                        "Salvataggio completato",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                        );
+                    break;
 
+                case -1:
+                    string missingFiles = string.Join(
+                        "\n",
+                        errors.Select(i => $"[{i}] {playlist[i].FilePath}"));
 
-            try
-            {
-                for (int i = 0; i < playlistCount; i++)
-                {
-                    if (!System.IO.File.Exists(playlist[i].FilePath))
-                    {
-                        PoisonMessageBox.Show(
-                            this,
-                            $"Errore durante il salvattaggio di {playlist[i].FilePath}, file non trovato"
-                            );
-                        return;
-                    }
-                    string audioTrackFileName = Path.GetFileName(playlist[i].FilePath);
-                    string destination = Path.Combine(playlistPath, audioTrackFileName);
-                    System.IO.File.Copy(playlist[i].FilePath,destination,true);
-                    TrackMetaData.OverwriteMP3MetaTags(destination, playlist[i]);
-                }
-            }
-            catch (Exception ex)
-            {
-                PoisonMessageBox.Show(
-                            this,
-                            $"Errore {ex.Message}"
-                            );
+                    PoisonMessageBox.Show(
+                        this,
+                        "Impossibile salvare: alcuni file della playlist non esistono.\n\n" + missingFiles,
+                        "File mancanti",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                        );
+                    break;
+
+                case -2:
+                    PoisonMessageBox.Show(
+                        this,
+                        $"Nome playlist non valido.\n" +
+                        $"Max {AppDefaults.DirectoryOrFileNameMaxLenght} caratteri, " +
+                        $"caratteri vietati: {string.Join(", ", AppDefaults.NotAllowedCharsInDirectoryOrFileName)}",
+                        "Nome non valido",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                        );
+                    break;
+
+                case -3:
+                    PoisonMessageBox.Show(
+                        this,
+                        "Si è verificato un errore durante il salvataggio della playlist.",
+                        "Errore di salvataggio",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                        );
+                    break;
+
+                default:
+                    PoisonMessageBox.Show(
+                        this,
+                        $"Codice di ritorno inatteso: {result}",
+                        "Errore imprevisto",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                        );
+                    break;
             }
         }
 
@@ -374,50 +451,80 @@ namespace Echo
                 DialogResult res = PoisonMessageBox.Show(
                     this,
                     "Sei sicuro di voler caricare una nuova playlist?",
-                    "Confirmation",
+                    "Conferma",
                     MessageBoxButtons.YesNoCancel
                     );
                 if (res != DialogResult.Yes)
                     return;
             }
 
-            //Select Directory
-            FolderBrowserDialog openFileManager = new FolderBrowserDialog();
-            string directoryPath;
+            //Select File
+            OpenFileDialog openFileManager = new OpenFileDialog();
+            openFileManager.Filter = "File Echo|*.ech";
+            openFileManager.Title = "Seleziona una playlist";
+
             if (openFileManager.ShowDialog() != DialogResult.OK)
-            {
                 return;
-            }
-            directoryPath = openFileManager.SelectedPath;
-            playlistCount = 0;
-            string[] mp3Paths = Directory.GetFiles(directoryPath);
-            for (int i = 0; i < mp3Paths.Length && i < AppDefaults.MaxLoadedTracks; i++)
+
+            string echPath = openFileManager.FileName;
+            string loadedPlaylistName = string.Empty;
+            TrackMetaData.AudioTrack[] loadedPlaylist = null;
+
+            int result = TrackMetaData.LoadPlaylistFromEch(
+                echPath,
+                ref loadedPlaylistName,
+                ref loadedPlaylist);
+
+            switch (result)
             {
-                //Repetition verification
-                if(System.IO.Path.GetExtension(mp3Paths[i]) != ".mp3")
-                    continue;
-                TrackMetaData.AudioTrack newTrack = TrackMetaData.FromFile(mp3Paths[i]);
-                int findResult = TrackMetaData.FindTrackIndexByTitleAndArtist(newTrack.Title, newTrack.Artist, playlist, playlistCount);
-                if (findResult != -1)
-                {
-                    //Forse per evitare problemi durante il salvataggio di file meglio togliere la possibilita di avere stesso nome
-                    DialogResult result = PoisonMessageBox.Show(
-                    this,
-                    $"È già presente nella playlist un brano con lo stesso titolo \"{newTrack.Title}\" " +
-                    "Vuoi aggiungerlo comunque?",
-                    "Brano duplicato",
-                    MessageBoxButtons.YesNoCancel,
-                    MessageBoxIcon.Warning
-                    );
+                case 0:
+                    playlist = loadedPlaylist ?? new TrackMetaData.AudioTrack[AppDefaults.MaxLoadedTracks];
+                    playlistCount = Math.Min(
+                        (loadedPlaylist != null ? loadedPlaylist.Length : 0),
+                        AppDefaults.MaxLoadedTracks);
 
-                    if (result != DialogResult.Yes)
-                        return;
-                }
+                    ptxPlaylistName.Text = loadedPlaylistName;
+                    UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
 
-                playlist[playlistCount] = newTrack;
-                playlistCount++;
+                    PoisonMessageBox.Show(
+                        this,
+                        "Playlist caricata correttamente.",
+                        "Caricamento completato",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                        );
+                    break;
+
+                case -1:
+                    PoisonMessageBox.Show(
+                        this,
+                        "Il file selezionato non è una playlist valida (.ech) o la struttura associata non è corretta.",
+                        "Playlist non valida",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                        );
+                    break;
+
+                case -2:
+                    PoisonMessageBox.Show(
+                        this,
+                        "Si è verificato un errore durante il caricamento della playlist.",
+                        "Errore di caricamento",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                        );
+                    break;
+
+                default:
+                    PoisonMessageBox.Show(
+                        this,
+                        $"Codice di ritorno inatteso: {result}",
+                        "Errore imprevisto",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                        );
+                    break;
             }
-            UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
         }
     }
 }

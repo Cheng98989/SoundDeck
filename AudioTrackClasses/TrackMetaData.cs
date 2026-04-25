@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using NAudio.Dmo;
+using NAudio.Wave;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 using TagLib;
 using TagLib.WavPack;
@@ -42,19 +44,19 @@ namespace Echo
         /// <item><description>Album: "Album sconosciuto" (metadato mancante) oppure "Sconosciuto" (in caso di eccezione).</description></item>
         /// <item><description>Copertina: <see langword="null"/> se assente o in caso di errore.</description></item>
         /// <item><description>Durata: <see cref="TimeSpan.Zero"/> in caso di eccezione.</description></item>
-        /// <item><description>Volume iniziale: valore di <paramref name="defaultVolume"/>.</description></item>
+        /// <item><description>Volume iniziale: valore di <paramref name="volume"/>.</description></item>
         /// </list>
         /// </remarks>
         /// <param name="filePath">Percorso del file audio da analizzare.</param>
-        /// <param name="defaultVolume">Volume iniziale assegnato alla traccia caricata (default: <see cref="AppDefaults.DefaultVolumeMultiplier"/>).</param>
+        /// <param name="volume">Volume iniziale assegnato alla traccia caricata (default: <see cref="AppDefaults.DefaultVolumeMultiplier"/>).</param>
         /// <returns>Un <see cref="AudioTrack"/> popolato con le informazioni lette dal file.</returns>
         /// <exception cref="FileNotFoundException">Generata quando il file non esiste.</exception>
-        public static AudioTrack FromFile(string filePath, float defaultVolume = AppDefaults.DefaultVolumeMultiplier)
+        public static AudioTrack FromFile(string filePath, float volume = AppDefaults.DefaultVolumeMultiplier)
         {
             if (!System.IO.File.Exists(filePath))
                 throw new System.IO.FileNotFoundException();
 
-            float safeDefaultVolume = Math.Max(AppDefaults.MinDeviceVolume, Math.Min(AppDefaults.MaxDeviceVolume, defaultVolume));
+            float safeDefaultVolume = Math.Max(AppDefaults.MinDeviceVolume, Math.Min(AppDefaults.MaxDeviceVolume, volume));
 
             AudioTrack newTrack;
             newTrack.FilePath = filePath;
@@ -115,30 +117,7 @@ namespace Echo
                         newTrack.AlbumArt = null;
                     }
 
-                    // VolumeMultiplier custom tag (TXXX: ECHO_VOLUME_MULTIPLIER)
-                    // Se assente/non valido resta il default sicuro.
-                    float volumeFromTag = safeDefaultVolume;
-
-                    TagLib.Id3v2.Tag id3v2 = (TagLib.Id3v2.Tag)fileTag.GetTag(TagLib.TagTypes.Id3v2, false);
-                    if (id3v2 != null)
-                    {
-                        var frame = TagLib.Id3v2.UserTextInformationFrame.Get(
-                            id3v2,
-                            "ECHO_VOLUME_MULTIPLIER",
-                            false);
-
-                        if (frame != null && frame.Text != null && frame.Text.Length > 0)
-                        {
-                            string raw = frame.Text[0].Trim();
-
-                            float parsed;
-
-                            if (float.TryParse(raw, out parsed))
-                                volumeFromTag = (float)MathHelper.Clamp(parsed, 0f, 1f);
-                        }
-                    }
-
-                    newTrack.VolumeMultiplier = volumeFromTag;
+                    newTrack.VolumeMultiplier = safeDefaultVolume;
                 }
 
                 // Nota: anche `AudioFileReader` è `IDisposable`.
@@ -148,9 +127,8 @@ namespace Echo
                     newTrack.Duration = audioFileReader.TotalTime;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Error: {ex.Message}");
                 newTrack.Title = Path.GetFileNameWithoutExtension(filePath);
                 newTrack.Artist = AppDefaults.AudioTrackError;
                 newTrack.Album = AppDefaults.AudioTrackError;
@@ -180,18 +158,6 @@ namespace Echo
                     // Questo punto prima falliva quando `audioTrack.AlbumArt` proveniva da uno stream già chiuso.
                     // Dopo la correzione in `FromFile`, l'immagine è autonoma e serializzabile.
                     mp3.Tag.Pictures = ImageHelper.BuildTagPicturesFromImage(audioTrack.AlbumArt);
-
-                    var customTags = (TagLib.Id3v2.Tag)mp3.GetTag(TagLib.TagTypes.Id3v2, true);
-
-                    var frame = TagLib.Id3v2.UserTextInformationFrame.Get(
-                        customTags,
-                        "ECHO_VOLUME_MULTIPLIER",
-                        true);
-
-                    frame.Text = new string[]
-                    {
-                        audioTrack.VolumeMultiplier.ToString()
-                    };
 
                     mp3.Save();
                 }
@@ -233,8 +199,6 @@ namespace Echo
                 .FromSeconds(seconds)
                 .ToString("mm\\:ss");
         }
-
-
         public static void DeleteAudioTrackFromArray(int toDeleteIndex,AudioTrack[] array, ref int arrayCount, bool keepOrder = true)
         {
             if(array == null)
@@ -256,6 +220,123 @@ namespace Echo
             }
         }
 
-        
+        public static int SavePlaylistInEch(string softwareDirectory,string playlistName, AudioTrack[] playlist, int playlistCount, out int[] filePathError)
+        {
+            int errorsCount = 0;
+            int[] errors = new int[playlistCount];
+            for (int i = 0; i < playlistCount; i++)
+            {
+                if (!System.IO.File.Exists(playlist[i].FilePath))
+                {
+                    errors[errorsCount] = i;
+                    errorsCount++;
+                }
+            }
+
+            filePathError = new int[errorsCount];
+            for(int i  = 0; i < errorsCount; i++)
+            {
+                filePathError[i] = errors[i];
+            }
+            if (filePathError.Length > 0)
+                return -1;
+
+            if (!System.IO.Directory.Exists(softwareDirectory))
+                Directory.CreateDirectory(softwareDirectory);
+            if(!StringHelper.CanBeADirectoryOrFileName(ref playlistName,AppDefaults.SubstituteToSpaceInDirectoryOrFileName))
+                return -2;
+            string playlistDirectory = Path.Combine(softwareDirectory, playlistName);
+            bool tempDirectory = false;
+            string actPlaylistDirectory = playlistDirectory;
+            if (System.IO.Directory.Exists(playlistDirectory))
+            {
+                actPlaylistDirectory = playlistDirectory + "_tmp";
+                tempDirectory = true;
+            }
+            
+            Directory.CreateDirectory(actPlaylistDirectory);
+            string echPath = Path.Combine(actPlaylistDirectory, Path.ChangeExtension(playlistName,".ech"));
+            StreamWriter echFile = new StreamWriter(echPath);
+            string audioTracksDirectory = Path.Combine(actPlaylistDirectory, "audioTracks");
+            Directory.CreateDirectory(audioTracksDirectory);
+            string realAudioTrackDirectory = tempDirectory ? Path.Combine(playlistDirectory, "audioTracks"): default;
+            try
+            {
+                //Scrittura nome playlist
+                echFile.WriteLine(playlistName);
+                echFile.WriteLine(playlistCount);
+                for(int i =  0; i < playlistCount; i++)
+                {
+                    string fileName = Path.GetFileName(playlist[i].FilePath);
+                    string destination = Path.Combine(audioTracksDirectory, fileName);
+                    //Spostamento File in caso di percorsi diversi
+                    System.IO.File.Copy(playlist[i].FilePath, destination, true);
+                    if (tempDirectory)
+                        echFile.WriteLine(Path.Combine(realAudioTrackDirectory, fileName));
+                    else
+                        echFile.WriteLine(destination);
+
+                    echFile.WriteLine(playlist[i].VolumeMultiplier.ToString());
+                    OverwriteMP3MetaTags(destination, playlist[i]);
+                }
+                return 0;
+            }
+            catch
+            {
+                return -3;
+            }
+            finally
+            {
+                echFile.Close();
+                if (tempDirectory)
+                {
+                    Directory.Delete(playlistDirectory, true);
+                    Directory.Move(actPlaylistDirectory, playlistDirectory);
+                }
+            }
+        }
+
+        public static bool IsPlaylist(string echPath)
+        {
+            if(Path.GetExtension(echPath) != ".ech")
+                return false;
+            if(!System.IO.File.Exists(echPath))
+                return false;
+            if(!System.IO.Directory.Exists(Path.Combine(Path.GetDirectoryName(echPath),"audioTracks")))
+                return false;
+            return true;              
+        }
+
+        public static int LoadPlaylistFromEch(string echPath, ref string playlistName,ref AudioTrack[] playlist)
+        {
+            playlist = new AudioTrack[0];
+            if(!IsPlaylist(echPath))
+                return -1;
+            StreamReader reader = new StreamReader(echPath);
+            try
+            {
+                playlistName = reader.ReadLine();
+                int count = (int)MathHelper.Clamp(int.Parse(reader.ReadLine()),0,AppDefaults.MaxLoadedTracks);
+                AudioTrack[] tmp_playlist = new AudioTrack[count];
+                for(int i = 0; i < count && !reader.EndOfStream; i++)
+                {
+                    string trackPath = reader.ReadLine();
+                    float volume = float.Parse(reader.ReadLine());
+                    tmp_playlist[i] = FromFile(trackPath, volume);
+                }
+                playlist = tmp_playlist;
+                return 0;
+            }
+            catch
+            {
+                return -2;
+            }
+            finally
+            {
+                reader.Close();
+            }
+        }
     }
+
+    
 }

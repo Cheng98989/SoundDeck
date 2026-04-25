@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave;
+using ReaLTaiizor.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,13 @@ namespace Echo
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Errore durante la riproduzione: " + ex.Message);
+                PoisonMessageBox.Show(
+                    null,
+                    "Si è verificato un errore durante la riproduzione del brano:\n" + ex.Message,
+                    "Errore di riproduzione",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                    );
             }
             //return previusAudioVolume;
             

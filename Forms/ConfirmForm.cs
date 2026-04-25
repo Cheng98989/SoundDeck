@@ -28,8 +28,10 @@ namespace Echo
             {
                 PoisonMessageBox.Show(
                     this,
-                    "Il testo non corrisponde",
-                    "Conferma Fallita"
+                    "Il codice inserito non corrisponde. Verifica il testo e riprova.",
+                    "Conferma non riuscita",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
                 );
                 return;
             }
