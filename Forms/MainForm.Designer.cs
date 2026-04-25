@@ -62,8 +62,9 @@ namespace Echo
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.tsiPlaylistSave = new System.Windows.Forms.ToolStripMenuItem();
             this.salvaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ptxPlaylistName = new ReaLTaiizor.Controls.PoisonTextBox();
             this.caricaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ptxPlaylistName = new ReaLTaiizor.Controls.PoisonTextBox();
+            this.playlistsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.poisonTabControl1.SuspendLayout();
             this.poisonTabPage1.SuspendLayout();
             this.poisonPanel1.SuspendLayout();
@@ -203,6 +204,7 @@ namespace Echo
             this.ptbSelectedAudioPosition.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ptbSelectedAudioPosition_Scroll);
             this.ptbSelectedAudioPosition.MouseLeave += new System.EventHandler(this.ptbSelectedAudioPosition_MouseLeave);
             this.ptbSelectedAudioPosition.MouseHover += new System.EventHandler(this.ptbSelectedAudioPosition_MouseHover);
+            this.ptbSelectedAudioPosition.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ptbSelectedAudioPosition_MouseUp);
             // 
             // ptlSelectedAudioPlay
             // 
@@ -435,7 +437,8 @@ namespace Echo
             // 
             this.tsiPlaylistSave.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.salvaToolStripMenuItem,
-            this.caricaToolStripMenuItem});
+            this.caricaToolStripMenuItem,
+            this.playlistsToolStripMenuItem});
             this.tsiPlaylistSave.Name = "tsiPlaylistSave";
             this.tsiPlaylistSave.Size = new System.Drawing.Size(56, 20);
             this.tsiPlaylistSave.Text = "Playlist";
@@ -446,6 +449,13 @@ namespace Echo
             this.salvaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.salvaToolStripMenuItem.Text = "Salva";
             this.salvaToolStripMenuItem.Click += new System.EventHandler(this.salvaToolStripMenuItem_Click);
+            // 
+            // caricaToolStripMenuItem
+            // 
+            this.caricaToolStripMenuItem.Name = "caricaToolStripMenuItem";
+            this.caricaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.caricaToolStripMenuItem.Text = "Carica";
+            this.caricaToolStripMenuItem.Click += new System.EventHandler(this.caricaToolStripMenuItem_Click);
             // 
             // ptxPlaylistName
             // 
@@ -477,12 +487,12 @@ namespace Echo
             this.ptxPlaylistName.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.ptxPlaylistName.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
-            // caricaToolStripMenuItem
+            // playlistsToolStripMenuItem
             // 
-            this.caricaToolStripMenuItem.Name = "caricaToolStripMenuItem";
-            this.caricaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.caricaToolStripMenuItem.Text = "Carica";
-            this.caricaToolStripMenuItem.Click += new System.EventHandler(this.caricaToolStripMenuItem_Click);
+            this.playlistsToolStripMenuItem.Name = "playlistsToolStripMenuItem";
+            this.playlistsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.playlistsToolStripMenuItem.Text = "Playlists";
+            this.playlistsToolStripMenuItem.Click += new System.EventHandler(this.playlistsToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -551,6 +561,7 @@ namespace Echo
         private System.Windows.Forms.ToolStripMenuItem salvaToolStripMenuItem;
         private ReaLTaiizor.Controls.PoisonTextBox ptxPlaylistName;
         private System.Windows.Forms.ToolStripMenuItem caricaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem playlistsToolStripMenuItem;
     }
 }
 

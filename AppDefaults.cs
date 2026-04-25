@@ -10,9 +10,12 @@ namespace Echo
     /// </summary>
     public static class AppDefaults
     {
+        public static string BrowseAudioTracksInitialDirectory = "C:";
+
         //AudioTrack save path
         public static bool DeleteOriginalAudioTrack = false;
-        public static string AudioTrackSavePath = Path.Combine(".","playlist");
+        public static string AudioTrackSavePath = Path.Combine(".","playlists");
+
         public const int DirectoryOrFileNameMaxLenght = 30;
         public static char[] NotAllowedCharsInDirectoryOrFileName = new char[]
         {

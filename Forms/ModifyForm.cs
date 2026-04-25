@@ -81,8 +81,7 @@ namespace Echo
             //Assegnazione immagine
             if (ptxAlbumFilePath.Text == AppDefaults.DefaultAudioTrackAlbumArtMessage)
                 a.AlbumArt = audioTrack.AlbumArt;
-
-            if (string.IsNullOrEmpty(ptxAlbumFilePath.Text) || !File.Exists(ptxAlbumFilePath.Text))
+            else if (string.IsNullOrEmpty(ptxAlbumFilePath.Text) || !File.Exists(ptxAlbumFilePath.Text))
                 a.AlbumArt = AppDefaults.NullImage;
             else
                 a.AlbumArt = Image.FromFile(ptxAlbumFilePath.Text);
@@ -155,7 +154,7 @@ namespace Echo
             ptxAlbumFilePath.Text = AppDefaults.DefaultAudioTrackAlbumArtMessage;
             UIHelper.ShowImageInPictureBox(picAudioAlbumArt, audioTrack.AlbumArt);
             plbDurata.Text = TrackMetaData.FormatTrackTime((int)audioTrack.Duration.TotalSeconds);
-            ptxVolumeMultiplier.Text = audioFile.Volume.ToString();
+            ptxVolumeMultiplier.Text = audioTrack.VolumeMultiplier.ToString();
         }
 
         private void pbtBrowseAudio_Click(object sender, EventArgs e)
