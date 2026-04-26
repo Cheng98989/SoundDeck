@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualBasic.Logging;
+﻿using Echo.Helpers;
+using Microsoft.VisualBasic.Logging;
+using NAudio.Utils;
 using NAudio.Wave;
 using ReaLTaiizor.Controls;
 using ReaLTaiizor.Forms;
@@ -23,10 +25,14 @@ namespace Echo
         // Stato form
         private TrackMetaData.AudioTrack[] playlist = new TrackMetaData.AudioTrack[AppDefaults.MaxLoadedTracks];
         private int playlistCount = default;
-        //private int currentPlayingAudio = -1;
+        private ModalitaRiproduzione.e_ModalitaRiproduzione modalitaRiproduzione = 0;
 
         private WaveOutEvent waveOutDevice;
         private AudioFileReader audioFileReader;
+
+        
+        // Indica se l'utente sta cercando manualmente un punto nella traccia
+        private bool isUserSeeking = false;
 
         // Inizializzazione form
         public MainForm()
@@ -67,7 +73,7 @@ namespace Echo
                 trackWidth: ptbSelectedAudioPosition.Width,
                 labelWidth: plbSelectedAudioPositionTrackTime.Width
             );
-
+            
             plbSelectedAudioPositionTrackTime.Text = TrackMetaData.FormatTrackTime(ptbSelectedAudioPosition.Value);
         }
 
@@ -254,7 +260,7 @@ namespace Echo
             uc.ShowDialog();
             if (uc.DialogResult != DialogResult.OK)
                 return;
-
+            TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
             playlistCount = 0;
 
             UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
@@ -303,8 +309,9 @@ namespace Echo
             // Avvio traccia
             float startVolume = UIHelper.psbValueTowaveOutEventVolume(psbSelectedAudioVolume.Value);
             TrackManager.StartTrack(playlist[audioIndex], ref audioFileReader, ref waveOutDevice, startVolume);
-
-            ptbSelectedAudioPosition.Value = 0;
+            ptbSelectedAudioPosition.Maximum = (int)playlist[audioIndex].Duration.TotalSeconds;
+            audioPositionTimer.Stop();
+            audioPositionTimer.Start();
         }
 
         private void ptlSelectedAudioPause_Click(object sender, EventArgs e)
@@ -455,6 +462,7 @@ namespace Echo
                 if (res != DialogResult.Yes)
                     return;
             }
+            TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
 
             // Selezione file ech
             OpenFileDialog openFileManager = new OpenFileDialog();
@@ -486,14 +494,6 @@ namespace Echo
 
                     ptxPlaylistName.Text = loadedPlaylistName;
                     UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
-
-                    PoisonMessageBox.Show(
-                        this,
-                        "Playlist caricata correttamente.",
-                        "Caricamento completato",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                        );
                     break;
 
                 case -1:
@@ -536,9 +536,54 @@ namespace Echo
             openFileDialog.ShowDialog();
         }
 
+        private void ptbSelectedAudioPosition_MouseDown(object sender, MouseEventArgs e)
+        {
+            isUserSeeking = true;
+            audioPositionTimer.Stop();
+        }
+
         private void ptbSelectedAudioPosition_MouseUp(object sender, MouseEventArgs e)
         {
-            
+            if (audioFileReader == null)
+                return;
+
+            int targetSeconds = ptbSelectedAudioPosition.Value;
+
+            audioFileReader.CurrentTime = TimeSpan.FromSeconds(targetSeconds);
+
+            isUserSeeking = false;
+
+            if (waveOutDevice != null && waveOutDevice.PlaybackState == PlaybackState.Playing)
+                audioPositionTimer.Start();
+        }
+
+        private void audioPositionTimer_Tick(object sender, EventArgs e)
+        {
+            if(waveOutDevice ==  null || audioFileReader == null)
+            {
+                audioPositionTimer.Stop();
+                UIHelper.ResetPoisonTrackBar(ptbSelectedAudioPosition);
+                plbSelectedAudioPositionTime.Text = $"{TrackMetaData.FormatTrackTime(0)}/{TrackMetaData.FormatTrackTime(0)}";
+                return;
+            }
+            //canzone in pausa
+            if(waveOutDevice.PlaybackState == PlaybackState.Paused)
+            {
+                audioPositionTimer.Stop();
+                return;
+            }
+            //canzone finita 
+            if(waveOutDevice.PlaybackState != PlaybackState.Stopped && audioFileReader != null)
+            {
+                audioPositionTimer.Stop();
+                return;
+            }
+
+            int seconds = (int)audioFileReader.CurrentTime.TotalSeconds;
+            ptbSelectedAudioPosition.Value = seconds;
+            plbSelectedAudioPositionTime.Text = $"{TrackMetaData.FormatTrackTime(seconds)}/{TrackMetaData.FormatTrackTime(ptbSelectedAudioPosition.Maximum)}";
+
+
         }
     }
 }

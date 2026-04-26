@@ -137,6 +137,7 @@
     <Compile Include="Forms\ModifyForm.Designer.cs">
       <DependentUpon>ModifyForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ModalitaRiproduzione.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="AudioTrackClasses\TrackManager.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />

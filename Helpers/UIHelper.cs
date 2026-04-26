@@ -1,4 +1,5 @@
-﻿using ReaLTaiizor.Child.Crown;
+﻿using Echo.Helpers;
+using ReaLTaiizor.Child.Crown;
 using ReaLTaiizor.Controls;
 using System;
 using System.Collections.Generic;
@@ -146,6 +147,31 @@ namespace Echo
             }
             pic.Image = image;
         }
+
+
+
+
+        public static void ResetPoisonTrackBar(PoisonTrackBar trackbar)
+        {
+            trackbar.Minimum = 0;
+            trackbar.Maximum = 1;
+            trackbar.Value = 0;
+        }
+
+        public static string ModalitaRiproduzioneText(ModalitaRiproduzione.e_ModalitaRiproduzione m)
+        {
+            switch (m)
+            {
+                case ModalitaRiproduzione.e_ModalitaRiproduzione.Singolo:
+                    return "Modalità: Singolo";
+                case ModalitaRiproduzione.e_ModalitaRiproduzione.Loop:
+                    return "Modalità: Loop";
+                case ModalitaRiproduzione.e_ModalitaRiproduzione.Casuale:
+                    return "Modalità: Casuale";
+            }
+            return "Errore";
+        }
+
     }
     
     

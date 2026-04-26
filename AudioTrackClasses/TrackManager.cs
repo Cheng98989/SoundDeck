@@ -16,11 +16,17 @@ namespace Echo
             //Sto togliendo lastvolume e derivati
             //float previusAudioVolume = AppDefaults.DefaultVolumeMultiplier;
             if (waveOutEvent != null && waveOutEvent.PlaybackState == PlaybackState.Playing)
+            {
                 StopTrack(ref audioFileReader, ref waveOutEvent);
+                return;
+            }
+                
 
             if (waveOutEvent != null && waveOutEvent.PlaybackState == PlaybackState.Paused)
+            {
                 waveOutEvent.Play();
-                //return -1;
+                return;
+            }
 
             try
             {
