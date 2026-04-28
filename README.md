@@ -2,6 +2,8 @@
 
 Mi stavo stancando dell'utilizzo di Spotify: lo usavo solo per ascoltare le solite canzoni e spesso venivo interrotto dalle pubblicità. Per questo, e anche in vista di un progetto scolastico, ho deciso di realizzare un'alternativa costruita su misura per le mie esigenze: **Echo**, un player desktop per gestire playlist locali, riprodurre MP3, modificare metadati e salvare raccolte in formato dedicato `.ech`.
 
+Repo GitHub: [Cheng98989/Echo](https://github.com/Cheng98989/Echo.git)
+
 ![Schermata Principale](screenshots/main_1.png)
 
 ## Funzionalità principali
@@ -50,7 +52,7 @@ Sviluppato in **C# 7.3** su piattaforma **Windows Forms (.NET Framework 4.8)**.
 
 - **UI**: [ReaLTaiizor](https://github.com/Taiizor/ReaLTaiizor.git) per uno stile moderno e personalizzabile.
 - **Audio**: [NAudio](https://github.com/naudio/NAudio.git) per decodifica e interfacciamento con i dispositivi audio.
-- **Metadati**: [taglib-sharp](https://github.com/mono/taglib-sharp.git) per la lettura e scrittura dei tag ID3 in C#.
+- **Metadati**: [taglib-sharp](https://github.com/mono/taglib-sharp.git) per la lettura e scrittura dei tag in C#.
 
 ## Licenza
 
