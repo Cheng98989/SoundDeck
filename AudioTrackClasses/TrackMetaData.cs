@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using TagLib;
 using TagLib.WavPack;
 using static Echo.AppSettings;
+using static ReaLTaiizor.Drawing.Poison.PoisonPaint.ForeColor;
 
 namespace Echo
 {
@@ -150,12 +151,22 @@ namespace Echo
             return -1;
         }
 
+        public static int FindTrackIndexStartWith(string text, AudioTrack[] audioTrackArray, int audioTrackArrayCount)
+        {
+            for (int i = 0; i < audioTrackArrayCount; i++)
+            {
+                if (audioTrackArray[i].Title.StartsWith(text, StringComparison.OrdinalIgnoreCase))
+                    return i;
+            }
+            return -1;
+        }
+
         // Formattazione tempo
         public static string FormatTrackTime(int seconds)
         {
-            return TimeSpan
-                .FromSeconds(seconds)
-                .ToString("mm\\:ss");
+            int minutes = seconds / 60;
+            int secs = seconds % 60;
+            return $"{minutes}:{secs:00}";
         }
 
         // Rimozione traccia da array

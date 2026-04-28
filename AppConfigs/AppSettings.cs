@@ -12,6 +12,7 @@ namespace Echo
     {
         public struct UserSettings
         {
+            public int VolumeOnLoad;
             public string EchOnLoad;
 
             // ===== Percorsi =====

@@ -30,16 +30,14 @@
         {
             this.pbtOrdina = new ReaLTaiizor.Controls.PoisonButton();
             this.poisonLabel1 = new ReaLTaiizor.Controls.PoisonLabel();
+            this.pcbAscedent = new ReaLTaiizor.Controls.PoisonComboBox();
             this.pcbSortType = new ReaLTaiizor.Controls.PoisonComboBox();
-            this.pcbReference = new ReaLTaiizor.Controls.PoisonComboBox();
             this.poisonLabel2 = new ReaLTaiizor.Controls.PoisonLabel();
-            this.poisonCheckBox1 = new ReaLTaiizor.Controls.PoisonCheckBox();
-            this.poisonLabel3 = new ReaLTaiizor.Controls.PoisonLabel();
             this.SuspendLayout();
             // 
             // pbtOrdina
             // 
-            this.pbtOrdina.Location = new System.Drawing.Point(25, 181);
+            this.pbtOrdina.Location = new System.Drawing.Point(24, 136);
             this.pbtOrdina.Name = "pbtOrdina";
             this.pbtOrdina.Size = new System.Drawing.Size(197, 32);
             this.pbtOrdina.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -60,6 +58,25 @@
             // 
             // pcbSortType
             // 
+            this.pcbAscedent.DropDownHeight = 100;
+            this.pcbAscedent.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.pcbAscedent.FontSize = ReaLTaiizor.Extension.Poison.PoisonComboBoxSize.Small;
+            this.pcbAscedent.FormattingEnabled = true;
+            this.pcbAscedent.IntegralHeight = false;
+            this.pcbAscedent.ItemHeight = 19;
+            this.pcbAscedent.Items.AddRange(new object[] {
+            "Crescente",
+            "Decrescente"});
+            this.pcbAscedent.Location = new System.Drawing.Point(117, 67);
+            this.pcbAscedent.Name = "pcbSortType";
+            this.pcbAscedent.Size = new System.Drawing.Size(105, 25);
+            this.pcbAscedent.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
+            this.pcbAscedent.TabIndex = 23;
+            this.pcbAscedent.UseSelectable = true;
+            this.pcbAscedent.UseStyleColors = true;
+            // 
+            // pcbReference
+            // 
             this.pcbSortType.DropDownHeight = 100;
             this.pcbSortType.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.pcbSortType.FontSize = ReaLTaiizor.Extension.Poison.PoisonComboBoxSize.Small;
@@ -67,37 +84,19 @@
             this.pcbSortType.IntegralHeight = false;
             this.pcbSortType.ItemHeight = 19;
             this.pcbSortType.Items.AddRange(new object[] {
-            "Crescente",
-            "Decrescente"});
-            this.pcbSortType.Location = new System.Drawing.Point(117, 67);
-            this.pcbSortType.Name = "pcbSortType";
-            this.pcbSortType.Size = new System.Drawing.Size(105, 25);
-            this.pcbSortType.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
-            this.pcbSortType.TabIndex = 23;
-            this.pcbSortType.UseSelectable = true;
-            this.pcbSortType.UseStyleColors = true;
-            // 
-            // pcbReference
-            // 
-            this.pcbReference.DropDownHeight = 100;
-            this.pcbReference.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.pcbReference.FontSize = ReaLTaiizor.Extension.Poison.PoisonComboBoxSize.Small;
-            this.pcbReference.FormattingEnabled = true;
-            this.pcbReference.IntegralHeight = false;
-            this.pcbReference.ItemHeight = 19;
-            this.pcbReference.Items.AddRange(new object[] {
             "Titolo",
             "Autore",
+            "Album",
             "Durata",
-            "Filepath",
-            "Volume Multiplier"});
-            this.pcbReference.Location = new System.Drawing.Point(117, 102);
-            this.pcbReference.Name = "pcbReference";
-            this.pcbReference.Size = new System.Drawing.Size(105, 25);
-            this.pcbReference.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
-            this.pcbReference.TabIndex = 25;
-            this.pcbReference.UseSelectable = true;
-            this.pcbReference.UseStyleColors = true;
+            "Percorso File",
+            "Moltiplicatore di Volume"});
+            this.pcbSortType.Location = new System.Drawing.Point(117, 102);
+            this.pcbSortType.Name = "pcbReference";
+            this.pcbSortType.Size = new System.Drawing.Size(105, 25);
+            this.pcbSortType.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
+            this.pcbSortType.TabIndex = 25;
+            this.pcbSortType.UseSelectable = true;
+            this.pcbSortType.UseStyleColors = true;
             // 
             // poisonLabel2
             // 
@@ -109,35 +108,14 @@
             this.poisonLabel2.TabIndex = 24;
             this.poisonLabel2.Text = "Riferimento";
             // 
-            // poisonCheckBox1
-            // 
-            this.poisonCheckBox1.Location = new System.Drawing.Point(117, 138);
-            this.poisonCheckBox1.Name = "poisonCheckBox1";
-            this.poisonCheckBox1.Size = new System.Drawing.Size(21, 24);
-            this.poisonCheckBox1.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
-            this.poisonCheckBox1.TabIndex = 26;
-            this.poisonCheckBox1.UseSelectable = true;
-            // 
-            // poisonLabel3
-            // 
-            this.poisonLabel3.AutoSize = true;
-            this.poisonLabel3.Location = new System.Drawing.Point(23, 143);
-            this.poisonLabel3.Name = "poisonLabel3";
-            this.poisonLabel3.Size = new System.Drawing.Size(48, 19);
-            this.poisonLabel3.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
-            this.poisonLabel3.TabIndex = 27;
-            this.poisonLabel3.Text = "Stabile";
-            // 
             // SortForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(248, 232);
-            this.Controls.Add(this.poisonLabel3);
-            this.Controls.Add(this.poisonCheckBox1);
-            this.Controls.Add(this.pcbReference);
-            this.Controls.Add(this.poisonLabel2);
+            this.ClientSize = new System.Drawing.Size(248, 184);
             this.Controls.Add(this.pcbSortType);
+            this.Controls.Add(this.poisonLabel2);
+            this.Controls.Add(this.pcbAscedent);
             this.Controls.Add(this.poisonLabel1);
             this.Controls.Add(this.pbtOrdina);
             this.Name = "SortForm";
@@ -152,10 +130,8 @@
 
         private ReaLTaiizor.Controls.PoisonButton pbtOrdina;
         private ReaLTaiizor.Controls.PoisonLabel poisonLabel1;
+        private ReaLTaiizor.Controls.PoisonComboBox pcbAscedent;
         private ReaLTaiizor.Controls.PoisonComboBox pcbSortType;
-        private ReaLTaiizor.Controls.PoisonComboBox pcbReference;
         private ReaLTaiizor.Controls.PoisonLabel poisonLabel2;
-        private ReaLTaiizor.Controls.PoisonCheckBox poisonCheckBox1;
-        private ReaLTaiizor.Controls.PoisonLabel poisonLabel3;
     }
 }

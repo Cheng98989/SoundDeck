@@ -28,6 +28,10 @@ namespace Echo
                     string line;
 
                     line = reader.ReadLine();
+                    if (int.TryParse(line, out int volumeOnLoad))
+                        settings.VolumeOnLoad = volumeOnLoad;
+
+                    line = reader.ReadLine();
                     if(!string.IsNullOrWhiteSpace(line))
                         settings.EchOnLoad = line;
 
@@ -50,8 +54,7 @@ namespace Echo
                         settings.DefaultPlaybackMode = mode;
 
                     line = reader.ReadLine();
-                    float volumeMultiplier;
-                    if (float.TryParse(line, out volumeMultiplier))
+                    if (float.TryParse(line, out float volumeMultiplier))
                         settings.DefaultVolumeMultiplier = volumeMultiplier;
 
                     line = reader.ReadLine();
@@ -70,7 +73,6 @@ namespace Echo
                     int confirmationStringLength;
                     if (int.TryParse(line, out confirmationStringLength))
                         settings.ConfirmationStringLength = confirmationStringLength;
-                    
                 }
             }
             catch
@@ -89,6 +91,8 @@ namespace Echo
             StreamWriter writer = new StreamWriter(AppDefaults.ConfigFilePath + "_tmp");
             try
             {
+                writer.WriteLine(settings.VolumeOnLoad);
+
                 writer.WriteLine(settings.EchOnLoad);
 
                 writer.WriteLine(settings.BrowseAudioTracksInitialDirectory);

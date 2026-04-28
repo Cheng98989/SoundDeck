@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.poisonPanel1 = new ReaLTaiizor.Controls.PoisonPanel();
+            this.pbtResetEch = new ReaLTaiizor.Controls.PoisonButton();
             this.pbtBrowseEchOnLoad = new ReaLTaiizor.Controls.PoisonButton();
             this.ptxEchOnLoad = new ReaLTaiizor.Controls.PoisonTextBox();
             this.poisonLabel10 = new ReaLTaiizor.Controls.PoisonLabel();
@@ -56,13 +57,16 @@
             this.ptxAudioTrackAlbumNotAvailable = new ReaLTaiizor.Controls.PoisonTextBox();
             this.ptxSubstituteToSpaceInDirectoryOrFileName = new ReaLTaiizor.Controls.PoisonTextBox();
             this.plbSelectedAudioArtist = new ReaLTaiizor.Controls.PoisonLabel();
-            this.pbtResetEch = new ReaLTaiizor.Controls.PoisonButton();
+            this.poisonLabel11 = new ReaLTaiizor.Controls.PoisonLabel();
+            this.ptxVolumeOnLoad = new ReaLTaiizor.Controls.PoisonTextBox();
             this.poisonPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // poisonPanel1
             // 
             this.poisonPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(188)))), ((int)(((byte)(0)))));
+            this.poisonPanel1.Controls.Add(this.poisonLabel11);
+            this.poisonPanel1.Controls.Add(this.ptxVolumeOnLoad);
             this.poisonPanel1.Controls.Add(this.pbtResetEch);
             this.poisonPanel1.Controls.Add(this.pbtBrowseEchOnLoad);
             this.poisonPanel1.Controls.Add(this.ptxEchOnLoad);
@@ -96,13 +100,25 @@
             this.poisonPanel1.HorizontalScrollbarSize = 10;
             this.poisonPanel1.Location = new System.Drawing.Point(32, 64);
             this.poisonPanel1.Name = "poisonPanel1";
-            this.poisonPanel1.Size = new System.Drawing.Size(736, 488);
+            this.poisonPanel1.Size = new System.Drawing.Size(736, 520);
             this.poisonPanel1.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
             this.poisonPanel1.TabIndex = 21;
             this.poisonPanel1.UseCustomBackColor = true;
             this.poisonPanel1.VerticalScrollbarBarColor = false;
             this.poisonPanel1.VerticalScrollbarHighlightOnWheel = false;
             this.poisonPanel1.VerticalScrollbarSize = 10;
+            // 
+            // pbtResetEch
+            // 
+            this.pbtResetEch.Location = new System.Drawing.Point(664, 80);
+            this.pbtResetEch.Name = "pbtResetEch";
+            this.pbtResetEch.Size = new System.Drawing.Size(52, 24);
+            this.pbtResetEch.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
+            this.pbtResetEch.TabIndex = 60;
+            this.pbtResetEch.Text = "CLEAR";
+            this.pbtResetEch.UseSelectable = true;
+            this.pbtResetEch.UseStyleColors = true;
+            this.pbtResetEch.Click += new System.EventHandler(this.pbtResetEch_Click);
             // 
             // pbtBrowseEchOnLoad
             // 
@@ -176,7 +192,7 @@
             this.ptxConfirmationStringLength.CustomButton.Visible = false;
             this.ptxConfirmationStringLength.Lines = new string[] {
         "ptxConfirmationStringLength"};
-            this.ptxConfirmationStringLength.Location = new System.Drawing.Point(488, 408);
+            this.ptxConfirmationStringLength.Location = new System.Drawing.Point(488, 435);
             this.ptxConfirmationStringLength.MaxLength = 32767;
             this.ptxConfirmationStringLength.Name = "ptxConfirmationStringLength";
             this.ptxConfirmationStringLength.PasswordChar = '\0';
@@ -197,7 +213,7 @@
             // 
             this.poisonLabel9.AutoSize = true;
             this.poisonLabel9.BackColor = System.Drawing.Color.Transparent;
-            this.poisonLabel9.Location = new System.Drawing.Point(16, 408);
+            this.poisonLabel9.Location = new System.Drawing.Point(16, 435);
             this.poisonLabel9.Name = "poisonLabel9";
             this.poisonLabel9.Size = new System.Drawing.Size(462, 19);
             this.poisonLabel9.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -219,7 +235,7 @@
             // 
             // pbtSave
             // 
-            this.pbtSave.Location = new System.Drawing.Point(16, 440);
+            this.pbtSave.Location = new System.Drawing.Point(16, 467);
             this.pbtSave.Name = "pbtSave";
             this.pbtSave.Size = new System.Drawing.Size(704, 32);
             this.pbtSave.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -245,7 +261,7 @@
             // 
             this.poisonLabel8.AutoSize = true;
             this.poisonLabel8.BackColor = System.Drawing.Color.Transparent;
-            this.poisonLabel8.Location = new System.Drawing.Point(16, 221);
+            this.poisonLabel8.Location = new System.Drawing.Point(16, 216);
             this.poisonLabel8.Name = "poisonLabel8";
             this.poisonLabel8.Size = new System.Drawing.Size(313, 19);
             this.poisonLabel8.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -257,7 +273,7 @@
             // 
             this.poisonLabel5.AutoSize = true;
             this.poisonLabel5.BackColor = System.Drawing.Color.Transparent;
-            this.poisonLabel5.Location = new System.Drawing.Point(16, 376);
+            this.poisonLabel5.Location = new System.Drawing.Point(16, 403);
             this.poisonLabel5.Name = "poisonLabel5";
             this.poisonLabel5.Size = new System.Drawing.Size(340, 19);
             this.poisonLabel5.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -273,7 +289,7 @@
             this.pcbDefaultPlaybackMode.FormattingEnabled = true;
             this.pcbDefaultPlaybackMode.IntegralHeight = false;
             this.pcbDefaultPlaybackMode.ItemHeight = 19;
-            this.pcbDefaultPlaybackMode.Location = new System.Drawing.Point(456, 246);
+            this.pcbDefaultPlaybackMode.Location = new System.Drawing.Point(456, 273);
             this.pcbDefaultPlaybackMode.Name = "pcbDefaultPlaybackMode";
             this.pcbDefaultPlaybackMode.Size = new System.Drawing.Size(264, 25);
             this.pcbDefaultPlaybackMode.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -282,7 +298,7 @@
             // 
             // pcbDeleteOriginalAudioTrack
             // 
-            this.pcbDeleteOriginalAudioTrack.Location = new System.Drawing.Point(696, 224);
+            this.pcbDeleteOriginalAudioTrack.Location = new System.Drawing.Point(696, 219);
             this.pcbDeleteOriginalAudioTrack.Name = "pcbDeleteOriginalAudioTrack";
             this.pcbDeleteOriginalAudioTrack.Size = new System.Drawing.Size(16, 16);
             this.pcbDeleteOriginalAudioTrack.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -394,7 +410,7 @@
             this.ptxAudioTrackArtistNotAvailable.CustomButton.Visible = false;
             this.ptxAudioTrackArtistNotAvailable.Lines = new string[] {
         "poisonTextBox4"};
-            this.ptxAudioTrackArtistNotAvailable.Location = new System.Drawing.Point(456, 341);
+            this.ptxAudioTrackArtistNotAvailable.Location = new System.Drawing.Point(456, 368);
             this.ptxAudioTrackArtistNotAvailable.MaxLength = 32767;
             this.ptxAudioTrackArtistNotAvailable.Name = "ptxAudioTrackArtistNotAvailable";
             this.ptxAudioTrackArtistNotAvailable.PasswordChar = '\0';
@@ -415,7 +431,7 @@
             // 
             this.poisonLabel7.AutoSize = true;
             this.poisonLabel7.BackColor = System.Drawing.Color.Transparent;
-            this.poisonLabel7.Location = new System.Drawing.Point(16, 345);
+            this.poisonLabel7.Location = new System.Drawing.Point(16, 372);
             this.poisonLabel7.Name = "poisonLabel7";
             this.poisonLabel7.Size = new System.Drawing.Size(339, 19);
             this.poisonLabel7.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -427,7 +443,7 @@
             // 
             this.poisonLabel4.AutoSize = true;
             this.poisonLabel4.BackColor = System.Drawing.Color.Transparent;
-            this.poisonLabel4.Location = new System.Drawing.Point(16, 283);
+            this.poisonLabel4.Location = new System.Drawing.Point(16, 310);
             this.poisonLabel4.Name = "poisonLabel4";
             this.poisonLabel4.Size = new System.Drawing.Size(336, 19);
             this.poisonLabel4.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -439,7 +455,7 @@
             // 
             this.poisonLabel6.AutoSize = true;
             this.poisonLabel6.BackColor = System.Drawing.Color.Transparent;
-            this.poisonLabel6.Location = new System.Drawing.Point(24, 288);
+            this.poisonLabel6.Location = new System.Drawing.Point(24, 315);
             this.poisonLabel6.Name = "poisonLabel6";
             this.poisonLabel6.Size = new System.Drawing.Size(0, 0);
             this.poisonLabel6.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -450,7 +466,7 @@
             // 
             this.poisonLabel3.AutoSize = true;
             this.poisonLabel3.BackColor = System.Drawing.Color.Transparent;
-            this.poisonLabel3.Location = new System.Drawing.Point(16, 314);
+            this.poisonLabel3.Location = new System.Drawing.Point(16, 341);
             this.poisonLabel3.Name = "poisonLabel3";
             this.poisonLabel3.Size = new System.Drawing.Size(381, 19);
             this.poisonLabel3.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -462,7 +478,7 @@
             // 
             this.poisonLabel2.AutoSize = true;
             this.poisonLabel2.BackColor = System.Drawing.Color.Transparent;
-            this.poisonLabel2.Location = new System.Drawing.Point(16, 252);
+            this.poisonLabel2.Location = new System.Drawing.Point(16, 279);
             this.poisonLabel2.Name = "poisonLabel2";
             this.poisonLabel2.Size = new System.Drawing.Size(326, 19);
             this.poisonLabel2.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
@@ -499,7 +515,7 @@
             this.ptxDefaultVolumeMultiplier.CustomButton.Visible = false;
             this.ptxDefaultVolumeMultiplier.Lines = new string[] {
         "poisonTextBox4"};
-            this.ptxDefaultVolumeMultiplier.Location = new System.Drawing.Point(456, 279);
+            this.ptxDefaultVolumeMultiplier.Location = new System.Drawing.Point(456, 306);
             this.ptxDefaultVolumeMultiplier.MaxLength = 32767;
             this.ptxDefaultVolumeMultiplier.Name = "ptxDefaultVolumeMultiplier";
             this.ptxDefaultVolumeMultiplier.PasswordChar = '\0';
@@ -532,7 +548,7 @@
             this.ptxAudioTrackAlbumNotAvailable.CustomButton.Visible = false;
             this.ptxAudioTrackAlbumNotAvailable.Lines = new string[] {
         "ptxAutore"};
-            this.ptxAudioTrackAlbumNotAvailable.Location = new System.Drawing.Point(456, 372);
+            this.ptxAudioTrackAlbumNotAvailable.Location = new System.Drawing.Point(456, 399);
             this.ptxAudioTrackAlbumNotAvailable.MaxLength = 32767;
             this.ptxAudioTrackAlbumNotAvailable.Name = "ptxAudioTrackAlbumNotAvailable";
             this.ptxAudioTrackAlbumNotAvailable.PasswordChar = '\0';
@@ -565,7 +581,7 @@
             this.ptxSubstituteToSpaceInDirectoryOrFileName.CustomButton.Visible = false;
             this.ptxSubstituteToSpaceInDirectoryOrFileName.Lines = new string[] {
         "ptxTitolo"};
-            this.ptxSubstituteToSpaceInDirectoryOrFileName.Location = new System.Drawing.Point(456, 310);
+            this.ptxSubstituteToSpaceInDirectoryOrFileName.Location = new System.Drawing.Point(456, 337);
             this.ptxSubstituteToSpaceInDirectoryOrFileName.MaxLength = 32767;
             this.ptxSubstituteToSpaceInDirectoryOrFileName.Name = "ptxSubstituteToSpaceInDirectoryOrFileName";
             this.ptxSubstituteToSpaceInDirectoryOrFileName.PasswordChar = '\0';
@@ -594,23 +610,56 @@
             this.plbSelectedAudioArtist.Text = "Cartella iniziale usata quando selezioni i file .ech da caricare come playlist.";
             this.plbSelectedAudioArtist.UseCustomBackColor = true;
             // 
-            // pbtResetEch
+            // poisonLabel11
             // 
-            this.pbtResetEch.Location = new System.Drawing.Point(664, 80);
-            this.pbtResetEch.Name = "pbtResetEch";
-            this.pbtResetEch.Size = new System.Drawing.Size(52, 24);
-            this.pbtResetEch.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
-            this.pbtResetEch.TabIndex = 60;
-            this.pbtResetEch.Text = "CLEAR";
-            this.pbtResetEch.UseSelectable = true;
-            this.pbtResetEch.UseStyleColors = true;
-            this.pbtResetEch.Click += new System.EventHandler(this.pbtResetEch_Click);
+            this.poisonLabel11.AutoSize = true;
+            this.poisonLabel11.BackColor = System.Drawing.Color.Transparent;
+            this.poisonLabel11.Location = new System.Drawing.Point(16, 248);
+            this.poisonLabel11.Name = "poisonLabel11";
+            this.poisonLabel11.Size = new System.Drawing.Size(211, 19);
+            this.poisonLabel11.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
+            this.poisonLabel11.TabIndex = 62;
+            this.poisonLabel11.Text = "Volume generale caricato all\'avvio.";
+            this.poisonLabel11.UseCustomBackColor = true;
+            // 
+            // ptxVolumeOnLoad
+            // 
+            // 
+            // 
+            // 
+            this.ptxVolumeOnLoad.CustomButton.Image = null;
+            this.ptxVolumeOnLoad.CustomButton.Location = new System.Drawing.Point(242, 1);
+            this.ptxVolumeOnLoad.CustomButton.Name = "";
+            this.ptxVolumeOnLoad.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.ptxVolumeOnLoad.CustomButton.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Blue;
+            this.ptxVolumeOnLoad.CustomButton.TabIndex = 1;
+            this.ptxVolumeOnLoad.CustomButton.Theme = ReaLTaiizor.Enum.Poison.ThemeStyle.Light;
+            this.ptxVolumeOnLoad.CustomButton.UseSelectable = true;
+            this.ptxVolumeOnLoad.CustomButton.Visible = false;
+            this.ptxVolumeOnLoad.Lines = new string[] {
+        "poisonTextBox4"};
+            this.ptxVolumeOnLoad.Location = new System.Drawing.Point(456, 244);
+            this.ptxVolumeOnLoad.MaxLength = 32767;
+            this.ptxVolumeOnLoad.Name = "ptxVolumeOnLoad";
+            this.ptxVolumeOnLoad.PasswordChar = '\0';
+            this.ptxVolumeOnLoad.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.ptxVolumeOnLoad.SelectedText = "";
+            this.ptxVolumeOnLoad.SelectionLength = 0;
+            this.ptxVolumeOnLoad.SelectionStart = 0;
+            this.ptxVolumeOnLoad.ShortcutsEnabled = true;
+            this.ptxVolumeOnLoad.Size = new System.Drawing.Size(264, 23);
+            this.ptxVolumeOnLoad.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Lime;
+            this.ptxVolumeOnLoad.TabIndex = 61;
+            this.ptxVolumeOnLoad.Text = "poisonTextBox4";
+            this.ptxVolumeOnLoad.UseSelectable = true;
+            this.ptxVolumeOnLoad.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.ptxVolumeOnLoad.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 570);
+            this.ClientSize = new System.Drawing.Size(800, 600);
             this.Controls.Add(this.poisonPanel1);
             this.MaximumSize = new System.Drawing.Size(800, 600);
             this.MinimumSize = new System.Drawing.Size(800, 488);
@@ -654,5 +703,7 @@
         private ReaLTaiizor.Controls.PoisonTextBox ptxEchOnLoad;
         private ReaLTaiizor.Controls.PoisonLabel poisonLabel10;
         private ReaLTaiizor.Controls.PoisonButton pbtResetEch;
+        private ReaLTaiizor.Controls.PoisonLabel poisonLabel11;
+        private ReaLTaiizor.Controls.PoisonTextBox ptxVolumeOnLoad;
     }
 }

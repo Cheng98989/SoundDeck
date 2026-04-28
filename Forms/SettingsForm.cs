@@ -28,6 +28,7 @@ namespace Echo.Forms
 
         private void DisplayUserSettings(AppSettings.UserSettings settings)
         {
+            ptxVolumeOnLoad.Text = settings.VolumeOnLoad.ToString();
             ptxEchOnLoad.Text = settings.EchOnLoad;
             ptxBrowseAudioTracksInitialDirectory.Text = settings.BrowseAudioTracksInitialDirectory;
             ptxAudioTrackSavePath.Text = settings.BrowsePlaylistsInitialDirectory;
@@ -119,6 +120,19 @@ namespace Echo.Forms
                 return;
             }
 
+            if(!int.TryParse(
+                    ptxVolumeOnLoad.Text, out int volumeOnLoad) || volumeOnLoad < 0 || volumeOnLoad > 100)
+            {
+                PoisonMessageBox.Show(
+                    this,
+                    "Il campo Volume On Load deve contenere un numero intero valido compreso tra 0 e 100.",
+                    "Valore non valido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                    );
+                return;
+            }
+
             if (ptxSubstituteToSpaceInDirectoryOrFileName.Text.Length > 1)
             {
                 PoisonMessageBox.Show(
@@ -164,6 +178,7 @@ namespace Echo.Forms
                     );
                 return;
             }
+            tmp.VolumeOnLoad = volumeOnLoad;
             tmp.EchOnLoad = ptxEchOnLoad.Text;
             tmp.DeleteOriginalAudioTrack = pcbDeleteOriginalAudioTrack.Checked;
             tmp.DefaultPlaybackMode = (Playback.PlaybackMode)Enum.Parse(typeof(Playback.PlaybackMode), pcbDefaultPlaybackMode.SelectedItem.ToString());

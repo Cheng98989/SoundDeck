@@ -121,8 +121,6 @@ namespace Echo
             playIcon.Visible = true;
             pauseIcon.Visible = false;
         }
-
-
     }
 }
 

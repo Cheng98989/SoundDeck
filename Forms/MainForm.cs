@@ -13,9 +13,11 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TagLib.Matroska;
@@ -52,6 +54,8 @@ namespace Echo
             {
                 LoadPlaylist(userSettings.EchOnLoad);
             }
+            psbSelectedAudioVolume.Value = 100 - userSettings.VolumeOnLoad;
+
             // Immagine default
             picSelectedAudioAlbumArt.Image = picSelectedAudioAlbumArt.InitialImage;
 
@@ -73,7 +77,6 @@ namespace Echo
 
             UIHelper.ResetPoisonTrackBarAndTextWithTime(ptbSelectedAudioPosition, plbSelectedAudioPositionTime);
             plbPlayingAudioName.Text = "~Nessuna traccia in riproduzione~";
-
         }
 
         // Chiusura form
@@ -203,6 +206,7 @@ namespace Echo
                 playlistCount++;  
             }
             UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
+
         }
 
 
@@ -629,12 +633,19 @@ namespace Echo
                     case 0://single
                         TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
                         UIHelper.ResetPoisonTrackBarAndTextWithTime(ptbSelectedAudioPosition, plbSelectedAudioPositionTime);
+                        plbPlayingAudioName.Text = "~Nessuna traccia in riproduzione~";
                         return;
                     case 1://loop
                         TrackManager.LoopTrack(ref audioFileReader, ref waveOutDevice);
                         audioPositionTimer.Start();
                         break;
-                    case 2://shuffle
+                    case 2://sequential
+                        int actIndex = TrackMetaData.FindTrackIndexByFilePath(audioFileReader.FileName, playlist, playlistCount);
+                        TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
+                        int nextIndex = (actIndex + 1) % playlistCount;
+                        changeTrackWorkFlow(nextIndex);
+                        break;
+                    case 3://shuffle
                         string previusTrackFilePath = audioFileReader.FileName;
                         TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
                         //Chosing random trackn not equal to the previus one
@@ -645,15 +656,20 @@ namespace Echo
                             audioIndex = rand.Next(0, playlistCount);
                         }
                         while(previusTrackFilePath == playlist[audioIndex].FilePath);
-                        plvPlaylist.FocusedItem = plvPlaylist.Items[audioIndex];
-                        plvPlaylist.Items[audioIndex].Selected = true;
-                        updateAudioTrackPanel(audioIndex);
-                        plbPlayingAudioName.Text = "~" + playlist[audioIndex].Title + "~";
-                        float startVolume = UIHelper.psbValueTowaveOutEventVolume(psbSelectedAudioVolume.Value);
-                        TrackManager.StartTrack(playlist[audioIndex], ref audioFileReader, ref waveOutDevice, startVolume);
-                        ptbSelectedAudioPosition.Maximum = (int)playlist[audioIndex].Duration.TotalSeconds;
-                        audioPositionTimer.Start();
+                        changeTrackWorkFlow(audioIndex);
                         break;
+
+                        void changeTrackWorkFlow(int index)
+                        {
+                            plvPlaylist.FocusedItem = plvPlaylist.Items[index];
+                            plvPlaylist.Items[index].Selected = true;
+                            updateAudioTrackPanel(index);
+                            plbPlayingAudioName.Text = "~" + playlist[index].Title + "~";
+                            float startVolume = UIHelper.psbValueTowaveOutEventVolume(psbSelectedAudioVolume.Value);
+                            TrackManager.StartTrack(playlist[index], ref audioFileReader, ref waveOutDevice, startVolume);
+                            ptbSelectedAudioPosition.Maximum = (int)playlist[index].Duration.TotalSeconds;
+                            audioPositionTimer.Start();
+                        }
                 }
             }
             //canzone in pausa
@@ -677,5 +693,70 @@ namespace Echo
                 userSettings = settingsForm.userSettings;
             }
         }
+
+        private void ordinaPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (playlistCount <= 0)
+            {
+                PoisonMessageBox.Show(
+                    this,
+                    "La playlist è vuota.",
+                    "Playlist vuota",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                    );
+                return;
+            }
+            if(TrackStatus.IsTrackPlaying(waveOutDevice) && audioFileReader != null)
+            {
+                DialogResult dialogResult = PoisonMessageBox.Show(
+                this,
+                "Sei sicuro di voler ordinare la playlist?\n" +
+                "L'ordinamento fermerà la riproduzione audio.",
+                "Conferma ordinamento",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question
+                );
+                if (dialogResult != DialogResult.Yes)
+                    return;
+            }
+            TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
+            UIHelper.ResetPoisonTrackBarAndTextWithTime(ptbSelectedAudioPosition, plbSelectedAudioPositionTime);
+            plbPlayingAudioName.Text = "~Nessuna traccia in riproduzione~";
+
+            SortForm sortForm = new SortForm(ref playlist, playlistCount);
+            sortForm.ShowDialog();
+            UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
+        }
+
+        private void analizzaPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (playlistCount <= 0)
+            {
+                PoisonMessageBox.Show(
+                    this,
+                    "La playlist è vuota.",
+                    "Playlist vuota",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                    );
+                return;
+            }
+
+            AnaliysisForm analiysisForm = new AnaliysisForm(playlist, playlistCount);
+            analiysisForm.ShowDialog();
+
+        }
+
+        private void pbtSearchTrack_Click(object sender, EventArgs e)
+        {
+            int index = TrackMetaData.FindTrackIndexStartWith(ptxSearchTrack.Text, playlist, playlistCount);
+            if(index == -1)
+                return;
+            plvPlaylist.FocusedItem = plvPlaylist.Items[index];
+            plvPlaylist.Items[index].Selected = true;
+        }
+
+        
     }
 }

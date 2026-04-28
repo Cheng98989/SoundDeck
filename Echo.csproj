@@ -132,7 +132,14 @@
   <ItemGroup>
     <Compile Include="AppConfigs\AppDefaults.cs" />
     <Compile Include="AppConfigs\AppSettings.cs" />
+    <Compile Include="AudioTrackClasses\TrackAnalizer.cs" />
     <Compile Include="AudioTrackClasses\TrackStatus.cs" />
+    <Compile Include="Forms\AnaliysisForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AnaliysisForm.Designer.cs">
+      <DependentUpon>AnaliysisForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ModifyForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -173,6 +180,10 @@
       <DependentUpon>ConfirmForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AppConfigs\SettingService.cs" />
+    <Compile Include="Sorting\Sorter.cs" />
+    <EmbeddedResource Include="Forms\AnaliysisForm.resx">
+      <DependentUpon>AnaliysisForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

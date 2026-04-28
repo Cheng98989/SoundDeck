@@ -12,7 +12,8 @@ namespace Echo.Helpers
         {
             Single = 0,
             Loop = 1,
-            Shuffle = 2,
+            Sequential = 2,
+            Shuffle = 3,
         }
     }
 }

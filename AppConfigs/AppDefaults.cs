@@ -19,12 +19,13 @@ namespace Echo
         #endregion
 
         #region Default impostazioni utente
+        public static int VolumeOnLoad = 50;
         public static string BrowseAudioTracksInitialDirectory = "C:";
         public static bool DeleteOriginalAudioTrack = false;
         public static string PlaylistSavePath = Path.Combine(".", "playlists");
         public static string BrowsePlaylistsInitialDirectory = PlaylistSavePath;
 
-        public static readonly Playback.PlaybackMode DefaultPlaybackMode = Playback.PlaybackMode.Loop;
+        public static readonly Playback.PlaybackMode DefaultPlaybackMode = Playback.PlaybackMode.Single;
         public static readonly float DefaultVolumeMultiplier = 1f;
         public static readonly int MaxLoadedTracks = 500;
 
@@ -38,6 +39,7 @@ namespace Echo
 
         public static readonly AppSettings.UserSettings defaultUserSettings = new AppSettings.UserSettings
         {
+            VolumeOnLoad = VolumeOnLoad,
             EchOnLoad = "",
             BrowseAudioTracksInitialDirectory = BrowseAudioTracksInitialDirectory,
             BrowsePlaylistsInitialDirectory = BrowsePlaylistsInitialDirectory,
