@@ -54,10 +54,11 @@ namespace Echo
             {
                 LoadPlaylist(userSettings.EchOnLoad);
             }
+            else
+                picSelectedAudioAlbumArt.Image = picSelectedAudioAlbumArt.InitialImage;
+
             psbSelectedAudioVolume.Value = 100 - userSettings.VolumeOnLoad;
 
-            // Immagine default
-            picSelectedAudioAlbumArt.Image = picSelectedAudioAlbumArt.InitialImage;
 
             // Posizione iniziale label tempo
             plbSelectedAudioPositionTrackTime.Location = UIHelper.GetTrackTimeLabelPosition(
@@ -77,6 +78,7 @@ namespace Echo
 
             UIHelper.ResetPoisonTrackBarAndTextWithTime(ptbSelectedAudioPosition, plbSelectedAudioPositionTime);
             plbPlayingAudioName.Text = "~Nessuna traccia in riproduzione~";
+            ptbSelectedAudioPosition.Enabled = false;
         }
 
         // Chiusura form
@@ -148,8 +150,6 @@ namespace Echo
         // Gestione playlist
         private void pbtBrowseAddAudio_Click(object sender, EventArgs e)
         {
-            // Limite brani
-            
             // Selezione file
             OpenFileDialog openFileManager = new OpenFileDialog();
             openFileManager.Filter = "File MP3|*.mp3";
@@ -291,6 +291,7 @@ namespace Echo
             UIHelper.ResetPoisonTrackBarAndTextWithTime(ptbSelectedAudioPosition, plbSelectedAudioPositionTime);
 
             plbPlayingAudioName.Text = "~Nessuna traccia in riproduzione~";
+            ptbSelectedAudioPosition.Enabled = false;
             playlistCount = 0;
 
             UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
@@ -319,9 +320,17 @@ namespace Echo
 
             // Recupero indice brano
             int audioIndex = default;
-            
             if (plvPlaylist.FocusedItem == null)
-                audioIndex = TrackMetaData.FindTrackIndexByTitleAndArtist(plbSelectedAudioTitle.Text, plbSelectedAudioArtist.Text, playlist, playlistCount);
+            {
+                PoisonMessageBox.Show(
+                        this,
+                        "Seleziona un brano dalla playlist prima di procedere.",
+                        "Nessun brano selezionato",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                        );
+                return;
+            }
             else
                 audioIndex = plvPlaylist.Items.IndexOf(plvPlaylist.FocusedItem);
 
@@ -358,6 +367,7 @@ namespace Echo
                     {
                         TrackManager.ResumeTrack(waveOutDevice);
                         UIHelper.UpdateAudioPoisonIcon(waveOutDevice, audioFileReader, picPlayIcon, picPauseIcon);
+                        ptbSelectedAudioPosition.Enabled = true;
                         audioPositionTimer.Start();
                         
                         return;
@@ -369,6 +379,7 @@ namespace Echo
             float startVolume = UIHelper.psbValueTowaveOutEventVolume(psbSelectedAudioVolume.Value);
             TrackManager.StartTrack(playlist[audioIndex], ref audioFileReader, ref waveOutDevice, startVolume);
             UIHelper.UpdateAudioPoisonIcon(waveOutDevice, audioFileReader, picPlayIcon, picPauseIcon);
+            ptbSelectedAudioPosition.Enabled = true;
             plbPlayingAudioName.Text = "~"+playlist[audioIndex].Title+"~";
             ptbSelectedAudioPosition.Maximum = (int)playlist[audioIndex].Duration.TotalSeconds;
             audioPositionTimer.Stop();
@@ -521,6 +532,7 @@ namespace Echo
             TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
             UIHelper.ResetPoisonTrackBarAndTextWithTime(ptbSelectedAudioPosition, plbSelectedAudioPositionTime);
             plbPlayingAudioName.Text = "~Nessuna traccia in riproduzione~";
+            ptbSelectedAudioPosition.Enabled = false;
 
             // Selezione file ech
             OpenFileDialog openFileManager = new OpenFileDialog();
@@ -549,13 +561,24 @@ namespace Echo
             switch (result)
             {
                 case 0:
-                    playlist = loadedPlaylist ?? new TrackMetaData.AudioTrack[AppDefaults.MaxLoadedTracks];
+                    if (loadedPlaylist != null)
+                        playlist = loadedPlaylist;
+                    else
+                        playlist = new TrackMetaData.AudioTrack[AppDefaults.MaxLoadedTracks];
+
                     playlistCount = Math.Min(
                         (loadedPlaylist != null ? loadedPlaylist.Length : 0),
                         AppDefaults.MaxLoadedTracks);
 
                     ptxPlaylistName.Text = loadedPlaylistName;
                     UIHelper.PopulatePlaylistListView(playlist, playlistCount, plvPlaylist);
+                    if (playlistCount >= 1)
+                    {
+                        plvPlaylist.FocusedItem = plvPlaylist.Items[0];
+                        plvPlaylist.Items[0].Selected = true;
+                        updateAudioTrackPanel(0);
+                    }
+                    
                     break;
 
                 case -1:
@@ -634,16 +657,19 @@ namespace Echo
                         TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
                         UIHelper.ResetPoisonTrackBarAndTextWithTime(ptbSelectedAudioPosition, plbSelectedAudioPositionTime);
                         plbPlayingAudioName.Text = "~Nessuna traccia in riproduzione~";
+                        ptbSelectedAudioPosition.Enabled = false;
                         return;
                     case 1://loop
                         TrackManager.LoopTrack(ref audioFileReader, ref waveOutDevice);
                         audioPositionTimer.Start();
+                        ptbSelectedAudioPosition.Enabled = true;
                         break;
                     case 2://sequential
                         int actIndex = TrackMetaData.FindTrackIndexByFilePath(audioFileReader.FileName, playlist, playlistCount);
                         TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
                         int nextIndex = (actIndex + 1) % playlistCount;
                         changeTrackWorkFlow(nextIndex);
+                        ptbSelectedAudioPosition.Enabled = true;
                         break;
                     case 3://shuffle
                         string previusTrackFilePath = audioFileReader.FileName;
@@ -657,6 +683,7 @@ namespace Echo
                         }
                         while(previusTrackFilePath == playlist[audioIndex].FilePath);
                         changeTrackWorkFlow(audioIndex);
+
                         break;
 
                         void changeTrackWorkFlow(int index)
@@ -723,6 +750,7 @@ namespace Echo
             TrackManager.StopTrack(ref audioFileReader, ref waveOutDevice);
             UIHelper.ResetPoisonTrackBarAndTextWithTime(ptbSelectedAudioPosition, plbSelectedAudioPositionTime);
             plbPlayingAudioName.Text = "~Nessuna traccia in riproduzione~";
+            ptbSelectedAudioPosition.Enabled = false;
 
             SortForm sortForm = new SortForm(ref playlist, playlistCount);
             sortForm.ShowDialog();

@@ -593,7 +593,6 @@ namespace Echo
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox pictureBox1;
         private ReaLTaiizor.Controls.PoisonListView plvPlaylist;
         private ReaLTaiizor.Controls.PoisonTrackBar ptbSelectedAudioPosition;
         private System.Windows.Forms.PictureBox picSelectedAudioAlbumArt;
